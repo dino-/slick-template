@@ -1,6 +1,6 @@
-{-# LANGUAGE DeriveGeneric         #-}
-{-# LANGUAGE DeriveAnyClass        #-}
-{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 
 module Main where
@@ -28,13 +28,13 @@ import Slick (compileTemplate', convert, markdownToHTML, substitute)
 ---Config-----------------------------------------------------------------------
 
 siteMeta :: SiteMeta
-siteMeta =
-    SiteMeta { siteAuthor = "Me"
-             , baseUrl = "https://example.com"
-             , siteTitle = "My Slick Site"
-             , twitterHandle = Just "myslickhandle"
-             , githubUser = Just "myslickgithubuser"
-             }
+siteMeta = SiteMeta
+  { siteAuthor = "Me"
+  , baseUrl = "https://example.com"
+  , siteTitle = "My Slick Site"
+  , twitterHandle = Just "myslickhandle"
+  , githubUser = Just "myslickgithubuser"
+  }
 
 outputFolder :: FilePath
 outputFolder = "docs/"
@@ -47,50 +47,52 @@ withSiteMeta (Object obj) = Object $ HML.union obj siteMetaObj
     Object siteMetaObj = toJSON siteMeta
 withSiteMeta _ = error "only add site meta to objects"
 
-data SiteMeta =
-    SiteMeta { siteAuthor    :: String
-             , baseUrl       :: String -- e.g. https://example.ca
-             , siteTitle     :: String
-             , twitterHandle :: Maybe String -- Without @
-             , githubUser    :: Maybe String
-             }
-    deriving (Generic, Eq, Ord, Show, ToJSON)
+data SiteMeta = SiteMeta
+  { siteAuthor :: String
+  , baseUrl :: String -- e.g. https://example.ca
+  , siteTitle :: String
+  , twitterHandle :: Maybe String -- Without @
+  , githubUser :: Maybe String
+  }
+  deriving (Generic, Eq, Ord, Show, ToJSON)
 
 -- | Data for the index page
-data IndexInfo =
-  IndexInfo
-    { posts :: [Post]
-    } deriving (Generic, Show, FromJSON, ToJSON)
+data IndexInfo = IndexInfo
+  { posts :: [Post]
+  } deriving (Generic, Show, FromJSON, ToJSON)
 
 type Tag = String
 
 -- | Data for a blog post
-data Post =
-    Post { title       :: String
-         , author      :: String
-         , content     :: String
-         , url         :: String
-         , date        :: String
-         , tags        :: [Tag]
-         , description :: String
-         , image       :: Maybe String
-         }
-    deriving (Generic, Eq, Ord, Show, FromJSON, ToJSON, Binary)
+data Post = Post
+  { title :: String
+  , author :: String
+  , content :: String
+  , url :: String
+  , date :: String
+  , tags :: [Tag]
+  , description :: String
+  , image :: Maybe String
+  }
+  deriving (Generic, Eq, Ord, Show, FromJSON, ToJSON, Binary)
 
-data AtomData =
-  AtomData { title        :: String
-           , domain       :: String
-           , author       :: String
-           , posts        :: [Post]
-           , currentTime  :: String
-           , atomUrl      :: String } deriving (Generic, ToJSON, Eq, Ord, Show)
+data AtomData = AtomData
+  { title :: String
+  , domain :: String
+  , author :: String
+  , posts :: [Post]
+  , currentTime :: String
+  , atomUrl :: String
+  }
+  deriving (Generic, ToJSON, Eq, Ord, Show)
 
 -- | given a list of posts this will build a table of contents
 buildIndex :: [Post] -> Action ()
 buildIndex posts' = do
   indexT <- compileTemplate' "site/templates/index.html"
-  let indexInfo = IndexInfo {posts = posts'}
-      indexHTML = T.unpack $ substitute indexT (withSiteMeta $ toJSON indexInfo)
+  let
+    indexInfo = IndexInfo {posts = posts'}
+    indexHTML = T.unpack $ substitute indexT (withSiteMeta $ toJSON indexInfo)
   writeFile' (outputFolder </> "index.html") indexHTML
 
 -- | Find and build all posts
@@ -137,15 +139,14 @@ toIsoDate = formatTime defaultTimeLocale (iso8601DateFormat rfc3339)
 buildFeed :: [Post] -> Action ()
 buildFeed posts' = do
   now <- liftIO getCurrentTime
-  let atomData =
-        AtomData
-          { title = siteTitle siteMeta
-          , domain = baseUrl siteMeta
-          , author = siteAuthor siteMeta
-          , posts = mkAtomPost <$> posts'
-          , currentTime = toIsoDate now
-          , atomUrl = "/atom.xml"
-          }
+  let atomData = AtomData
+        { title = siteTitle siteMeta
+        , domain = baseUrl siteMeta
+        , author = siteAuthor siteMeta
+        , posts = mkAtomPost <$> posts'
+        , currentTime = toIsoDate now
+        , atomUrl = "/atom.xml"
+        }
   atomTempl <- compileTemplate' "site/templates/atom.xml"
   writeFile' (outputFolder </> "atom.xml") . T.unpack $ substitute atomTempl (toJSON atomData)
     where
