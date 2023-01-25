@@ -16,19 +16,28 @@ Here's all you need to do to have your own site:
 2. Clone your new site repo
 3. Edit your `siteMeta` inside `Main.hs`
 4. Add some awesome blog posts in `site/posts/` by copying the sample post there
-4. run `stack build`; `stack exec build-site`
+4. run `stack run build-site`
 5. Serve your `docs` directory by enabling Github Pages in your repository's settings
 6. ...?
 7. Profit!
 
-If you want a quick tool for serving your file system during development I recommend using `serve`:
+If you want a quick tool for serving your file system during development:
 
 ```shell
-$ npm install -g serve
-$ serve docs
+$ cd docs
+$ python -m http.server [--bind 192.168.1.3] [8001]
 ```
 
-Then navigate to the port which is serving (usually http://localhost:3000 or http://localhost:5000 )
+Then navigate to `http://localhost:8000` or whatever IP and port you optionally
+specified. If working on different systems on a LAN, you can't use localhost
+and must specify the bind argument with the machine's IP.
+
+Note that this package is in python3. On some (weird, old?) systems it may be
+necessary to do `python3 -m http.server ...`
+
+To perform a full rebuild of everything including the build app
+
+    $ rm -rf docs/* && rm -rf .shake && stack clean && stack run build-site
 
 
 ---
