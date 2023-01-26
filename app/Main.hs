@@ -128,7 +128,7 @@ formatDate :: String -> String
 formatDate humanDate = toIsoDate parsedTime
   where
     parsedTime =
-      parseTimeOrError True defaultTimeLocale "%b %e, %Y" humanDate :: UTCTime
+      parseTimeOrError True defaultTimeLocale "%Y-%m-%d %H:%M:%S" humanDate :: UTCTime
 
 rfc3339 :: Maybe String
 rfc3339 = Just "%H:%M:%SZ"
