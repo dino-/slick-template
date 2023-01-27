@@ -71,8 +71,7 @@ data Post = Post
   , url :: String
   , date :: String
   , tags :: [Tag]
-  , description :: String
-  , image :: Maybe String
+  , description :: Maybe String
   }
   deriving (Generic, Eq, Ord, Show, FromJSON, ToJSON, Binary)
 
