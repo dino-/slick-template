@@ -32,8 +32,6 @@ siteMeta = SiteMeta
   { siteAuthor = "Me"
   , baseUrl = "https://example.com"
   , siteTitle = "My Slick Site"
-  , twitterHandle = Just "myslickhandle"
-  , githubUser = Just "myslickgithubuser"
   }
 
 outputFolder :: FilePath
@@ -51,8 +49,6 @@ data SiteMeta = SiteMeta
   { siteAuthor :: String
   , baseUrl :: String -- e.g. https://example.ca
   , siteTitle :: String
-  , twitterHandle :: Maybe String -- Without @
-  , githubUser :: Maybe String
   }
   deriving (Generic, Eq, Ord, Show, ToJSON)
 
